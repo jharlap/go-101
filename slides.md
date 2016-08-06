@@ -274,7 +274,7 @@ m2 := map[string]int{
 
 # Zero Values, part 2
 
-[embedmd]:# (slides/basics_zeros.go /var/ /$/)
+[embedmd]:# (slides/basics_zeros.go /var/ $)
 ```go
 var (
 	a int         // 0
@@ -392,7 +392,7 @@ func main() {
 	// 42: 42 is the number of US gallons in a barrel of oil. err: <nil>
 }
 ```
-[embedmd]:# (slides/basics_functions.go /\n.. Query/ /$/)
+[embedmd]:# (slides/basics_functions.go /\n.. Query/ $)
 ```go
 
 // QueryNumber gets an interesting fact about a number from NumbersAPI.
@@ -413,6 +413,33 @@ func QueryNumber(n int) (string, error) {
 
 - multi-valued return
 - defer runs after the return is evaluated but before the function exits, in reverse order (FILO)
+
+---
+
+# Function Values
+
+[embedmd]:# (slides/basics_function_values.go /func main/ $)
+```go
+func main() {
+	addr := ":80"
+
+	// handler is a variable of type func(ResponseWriter, *Request)
+	handler := func(w http.ResponseWriter, r *http.Request) {
+
+		// note the func closed over addr
+		fmt.Fprintf("Hello! This server listens on %s", addr)
+	}
+
+	http.HandleFunc("/", handler)
+	http.ListenAndServe(addr, nil)
+}
+```
+
+???
+
+- functions are values
+- type of `handler` is `func(http.ResponseWriter, *http.Request)`
+- handler closed over the addr variable defined in a surrounding scope
 
 ---
 class: inverse
@@ -731,6 +758,8 @@ func (c *Count) Increment(by int64) {
 ???
 
 - Note `Lock` is promoted automatically so can be invoked on the `*Count` directly
+- Not quite the same as C++/Java/... - see [Tony's example](https://play.golang.org/p/_q-tEdZDMG): Method on a specific type, not an interface.
+
 
 ---
 
@@ -1418,6 +1447,10 @@ func fetchWorker(n int, db *store.InMemory, ids <-chan uint64) {
 	close(ppl)
 ```
 
+???
+
+- `<-chan Person` and `chan<- uint64` improve clarity of function semantics. compiler will complain if programmer violates stated contract
+
 ---
 
 [embedmd]:# (exercises/ex5/solution/main.go /func main/ $)
@@ -1521,6 +1554,8 @@ class: inverse
 
 - Change your store API to randomly return errors
 - Update your main program to handle the errors
+
+Tip: [math/rand](https://godoc.org/math/rand) package may be helpful
 
 ---
 

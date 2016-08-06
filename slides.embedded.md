@@ -212,7 +212,7 @@ m2 := map[string]int{
 
 # Zero Values, part 2
 
-[embedmd]:# (slides/basics_zeros.go /var/ /$/)
+[embedmd]:# (slides/basics_zeros.go /var/ $)
 
 ???
 
@@ -260,12 +260,24 @@ m2 := map[string]int{
 # Functions (more)
 
 [embedmd]:# (slides/basics_functions.go /func main/ /\n}/)
-[embedmd]:# (slides/basics_functions.go /\n.. Query/ /$/)
+[embedmd]:# (slides/basics_functions.go /\n.. Query/ $)
 
 ???
 
 - multi-valued return
 - defer runs after the return is evaluated but before the function exits, in reverse order (FILO)
+
+---
+
+# Function Values
+
+[embedmd]:# (slides/basics_function_values.go /func main/ $)
+
+???
+
+- functions are values
+- type of `handler` is `func(http.ResponseWriter, *http.Request)`
+- handler closed over the addr variable defined in a surrounding scope
 
 ---
 class: inverse
@@ -442,6 +454,8 @@ https://godoc.org/fmt#Stringer: `String() string`
 ???
 
 - Note `Lock` is promoted automatically so can be invoked on the `*Count` directly
+- Not quite the same as C++/Java/... - see [Tony's example](https://play.golang.org/p/_q-tEdZDMG): Method on a specific type, not an interface.
+
 
 ---
 
@@ -927,6 +941,10 @@ Change your main program:
 
 [embedmd]:# (exercises/ex5/solution/main.go /.*ppl :=/ /close.*/)
 
+???
+
+- `<-chan Person` and `chan<- uint64` improve clarity of function semantics. compiler will complain if programmer violates stated contract
+
 ---
 
 [embedmd]:# (exercises/ex5/solution/main.go /func main/ $)
@@ -994,6 +1012,12 @@ class: inverse
 
 - Change your store API to randomly return errors
 - Update your main program to handle the errors
+
+Tip: [math/rand](https://godoc.org/math/rand) package may be helpful
+
+???
+
+Bonus exercise: Turn your program into a RESTful HTTP server (see `net/http`) and/or write unit tests for your program (see `testing`)
 
 ---
 
