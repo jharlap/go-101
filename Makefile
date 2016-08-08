@@ -7,6 +7,9 @@ server:
 	python -m SimpleHTTPServer &
 	fswatch slides.embedded.md | xargs -I {} make
 
+remark-latest.min.js:
+	curl -O https://gnab.github.io/remark/downloads/remark-latest.min.js
+
 TOOLS=github.com/campoy/embedmd
 tools:
 	$(foreach tool,$(TOOLS),$(call goget, $(tool)))
