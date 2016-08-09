@@ -444,7 +444,7 @@ func main() {
 ---
 class: inverse
 
-# Exercise
+# Exercise 1
 
 - Declare a struct type to contain information about a person
 - Include a name and age
@@ -607,7 +607,7 @@ func main() {
 
 class: inverse
 
-# Exercise
+# Exercise 2
 
 - `fmt.Println` uses the `fmt.Stringer` interface
 - Any object that implements `Stringer` will be pretty printed
@@ -881,9 +881,9 @@ Empty interface specifies no methods, so any type satisfies it
 
 class: inverse
 
-# Exercise
+# Exercise 3
 
-- Create a package `store` for an in-memory key-value store
+- Copy the template `store` package
 - Define an interface with a method `StoreKey()` that returns a `uint64`
 - Create a type `InMemory` that uses a map to store any type of object that implements your interface
 - `InMemory` should have functions to store and retrieve values by key
@@ -1152,7 +1152,7 @@ func main() {
 
 class: inverse
 
-# Exercise
+# Exercise 4
 
 - Update your program to concurrently create several people and store them in the store
 - Initialize 5 different people
@@ -1397,7 +1397,7 @@ close(quit)
 
 class: inverse
 
-# Exercise
+# Exercise 5
 
 Change your main program:
 - Write a function that receives `Person`s from a channel, stores them in the db, and sends the DB key to a next channel
@@ -1550,12 +1550,16 @@ Re 2-valued return:
 
 class: inverse
 
-# Exercise
+# Exercise 6
 
 - Change your store API to randomly return errors
 - Update your main program to handle the errors
 
 Tip: [math/rand](https://godoc.org/math/rand) package may be helpful
+
+???
+
+Bonus exercise: Turn your program into a RESTful HTTP server (see `net/http`) and/or write unit tests for your program (see `testing`)
 
 ---
 
