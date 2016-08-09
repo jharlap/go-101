@@ -226,6 +226,7 @@ var (
     s []byte   // byte slice
 )
 s2 := make([]byte, 1024) // byte slice with 1024 elements (all zeros)
+s3 := []int{6, 9, 42}
 
 a[1] = 42
 a[40] = 28 // index out of bounds will panic
