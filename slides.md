@@ -1496,15 +1496,14 @@ Change your main program:
 
 [embedmd]:# (exercises/ex5/solution/main.go /func storeWorker/ /}\n\t}\n}/)
 ```go
-func storeWorker(n int, db *store.InMemory, ppl <-chan Person, ids chan<- uint64) {
+func storeWorker(n int, db *store.InMemory, ppl <-chan Person, ids chan<- int) {
 	for p := range ppl {
 		fmt.Printf("Store worker %d storing %s\n", n, p.Name)
-		db.Put(p)
-		ids <- p.StoreKey()
+		ids <- db.Put(p)
 	}
 }
 
-func fetchWorker(n int, db *store.InMemory, ids <-chan uint64) {
+func fetchWorker(n int, db *store.InMemory, ids <-chan int) {
 	for id := range ids {
 		v := db.Get(id)
 		if v != nil {
@@ -1520,13 +1519,13 @@ func fetchWorker(n int, db *store.InMemory, ids <-chan uint64) {
 [embedmd]:# (exercises/ex5/solution/main.go /.*ppl :=/ /close.*/)
 ```go
 	ppl := make(chan Person)
-	ids := make(chan uint64)
+	ids := make(chan int)
 
-	go storeWorker(1, db, ppl, ids)
-	go storeWorker(2, db, ppl, ids)
-	go fetchWorker(1, db, ids)
-	go fetchWorker(2, db, ids)
-	go fetchWorker(3, db, ids)
+	go storeWorker(1, &db, ppl, ids)
+	go storeWorker(2, &db, ppl, ids)
+	go fetchWorker(1, &db, ids)
+	go fetchWorker(2, &db, ids)
+	go fetchWorker(3, &db, ids)
 
 	for i, name := range []string{"Alice", "Bob", "Claire", "Damian", "Elaine", "Francesc"} {
 		ppl <- Person{Name: name, AgeYears: i}
@@ -1543,15 +1542,15 @@ func fetchWorker(n int, db *store.InMemory, ids <-chan uint64) {
 [embedmd]:# (exercises/ex5/solution/main.go /func main/ $)
 ```go
 func main() {
-	db := new(store.InMemory)
+	db := store.New()
 	ppl := make(chan Person)
-	ids := make(chan uint64)
+	ids := make(chan int)
 
-	go storeWorker(1, db, ppl, ids)
-	go storeWorker(2, db, ppl, ids)
-	go fetchWorker(1, db, ids)
-	go fetchWorker(2, db, ids)
-	go fetchWorker(3, db, ids)
+	go storeWorker(1, &db, ppl, ids)
+	go storeWorker(2, &db, ppl, ids)
+	go fetchWorker(1, &db, ids)
+	go fetchWorker(2, &db, ids)
+	go fetchWorker(3, &db, ids)
 
 	for i, name := range []string{"Alice", "Bob", "Claire", "Damian", "Elaine", "Francesc"} {
 		ppl <- Person{Name: name, AgeYears: i}
@@ -1655,24 +1654,21 @@ Bonus exercise: Turn your program into a RESTful HTTP server (see `net/http`) an
 var errUnexpected = errors.New("an unexpected error")
 
 // Put stores a value
-func (db *InMemory) Put(v StoreKeyer) error {
+func (db *InMemory) Put(v Keyer) (int, error) {
 	db.Lock()
 	defer db.Unlock()
 
-	if db.data == nil {
-		db.data = make(map[uint64]StoreKeyer)
-	}
-
 	if rand.Intn(10) < 5 {
-		return errUnexpected
+		return 0, errUnexpected
 	}
 
-	db.data[v.StoreKey()] = v
-	return nil
+	k := v.Key()
+	db.data[k] = v
+	return k, nil
 }
 
 // Get retrieves a value
-func (db *InMemory) Get(k uint64) (StoreKeyer, error) {
+func (db *InMemory) Get(k int) (Keyer, error) {
 	db.RLock()
 	defer db.RUnlock()
 
@@ -1688,17 +1684,18 @@ func (db *InMemory) Get(k uint64) (StoreKeyer, error) {
 
 [embedmd]:# (exercises/ex6/solution/main.go /func storeWorker/ /}\n\t}\n}/)
 ```go
-func storeWorker(n int, db *store.InMemory, ppl <-chan Person, ids chan<- uint64) {
+func storeWorker(n int, db *store.InMemory, ppl <-chan Person, ids chan<- int) {
 	for p := range ppl {
 		fmt.Printf("Store worker %d storing %s\n", n, p.Name)
-		if err := db.Put(p); err != nil {
+		k, err := db.Put(p)
+		if err != nil {
 			fmt.Printf("Error storing %s: %s\n", p.Name, err)
 		}
-		ids <- p.StoreKey()
+		ids <- k
 	}
 }
 
-func fetchWorker(n int, db *store.InMemory, ids <-chan uint64) {
+func fetchWorker(n int, db *store.InMemory, ids <-chan int) {
 	for id := range ids {
 		v, err := db.Get(id)
 		if err != nil {
