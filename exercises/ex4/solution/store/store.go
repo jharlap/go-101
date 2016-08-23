@@ -3,30 +3,36 @@ package store
 
 import "sync"
 
-// StoreKeyer is an object that can be kept in an InMemory store
-type StoreKeyer interface {
-	StoreKey() uint64
+// Keyer is an object that can be kept in an InMemory store
+type Keyer interface {
+	Key() int
 }
 
-// An InMemory store is thread-safe and handles any StoreKeyer
+// An InMemory store handles any Keyer
 type InMemory struct {
 	sync.RWMutex
-	data map[uint64]StoreKeyer
+	data map[int]Keyer
+}
+
+// New creates an InMemory store
+func New() InMemory {
+	return InMemory{
+		data: make(map[int]Keyer),
+	}
 }
 
 // Put stores a value
-func (db *InMemory) Put(v StoreKeyer) {
+func (db *InMemory) Put(v Keyer) int {
 	db.Lock()
 	defer db.Unlock()
 
-	if db.data == nil {
-		db.data = make(map[uint64]StoreKeyer)
-	}
-	db.data[v.StoreKey()] = v
+	k := v.Key()
+	db.data[k] = v
+	return k
 }
 
 // Get retrieves a value
-func (db *InMemory) Get(k uint64) StoreKeyer {
+func (db InMemory) Get(k int) Keyer {
 	db.RLock()
 	defer db.RUnlock()
 

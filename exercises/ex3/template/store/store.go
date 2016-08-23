@@ -8,24 +8,21 @@ type Keyer interface {
 
 // An InMemory store handles any Keyer
 type InMemory struct {
-	data map[int]Keyer
+	data // add your map here
 }
 
 // New creates an InMemory store
 func New() InMemory {
-	return InMemory{
-		data: make(map[int]Keyer),
-	}
+	// make and return a store
 }
 
 // Put stores a value
 func (db *InMemory) Put(v Keyer) int {
-	k := v.Key()
-	db.data[k] = v
-	return k
+	// insert the value into the store, in the slot determined by Key()
+	// return the key used
 }
 
 // Get retrieves a value
 func (db InMemory) Get(k int) Keyer {
-	return db.data[k]
+	// return the value with the given key
 }

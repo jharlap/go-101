@@ -17,8 +17,8 @@ func (p Person) String() string {
 	return fmt.Sprintf("%s is %d years old", p.Name, p.AgeYears)
 }
 
-func (p Person) StoreKey() uint64 {
-	return uint64(len(p.Name) + p.AgeYears)
+func (p Person) Key() int {
+	return len(p.Name) + p.AgeYears
 }
 
 func main() {
@@ -30,7 +30,7 @@ func main() {
 		Person{"Elaine", 5},
 	}
 
-	db := new(store.InMemory)
+	db := store.New()
 	var wg sync.WaitGroup
 	for _, p := range ppl {
 		wg.Add(1)

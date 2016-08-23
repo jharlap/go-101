@@ -404,15 +404,13 @@ class: inverse
 
 # Exercise 2
 
-- `fmt.Println` uses the `fmt.Stringer` interface
-- Any object that implements `Stringer` will be pretty printed
-- Update your `Person` so that it implements `fmt.Stringer`
-
-Tip: Use godoc.org to look up the Stringer interface
+- Change the pretty-printer function to be a method of `Person`
+- Use the signature `String() string` (we'll see why later)
+- Do not call your method, just `fmt.Println(p)`
 
 ???
 
-https://godoc.org/fmt#Stringer: `String() string`
+We haven't covered interfaces yet, so keep the explanation of why we did this simple for now.
 
 ---
 
@@ -449,7 +447,7 @@ https://godoc.org/fmt#Stringer: `String() string`
 [embedmd]:# (slides/oop_embedding_mutex.go /.. Count/ /}/)
 ???
 
-- Embedding `sync.Mutex` means `Count` **is-a** `Mutex`
+- Embedding `sync.Mutex` means `Count` **is-a/has-a** `Mutex`
 - Can call methods on embedded types
 --
 
@@ -507,9 +505,37 @@ type Closer interface {
 Idiomatic Go:
 - small interfaces (1 method VERY common)
 - name interface `method`-er if only 1 method
+
+
 --
 
 ```go
+package fmt
+
+type Stringer interface {
+	String() string
+}
+```
+
+???
+
+- `Person.String()` satisfies this interface - how `fmt.Println()` does its magic
+
+---
+
+# Interfaces
+
+```go
+package io
+
+type Reader interface {
+	Read(p []byte) (n int, err error)
+}
+```
+
+```go
+package main
+
 type Buffer struct {
 	buf []byte
 	off int
@@ -527,7 +553,7 @@ func (b *Buffer) Read(p []byte) (n int, err error) {
 
 ???
 
-- Buffer _implicitly_ implements Reader
+- Buffer _implicitly_ satisfies io.Reader
 
 ---
 
@@ -560,7 +586,7 @@ func main() {
 
 ???
 
-- Buffer implicitly implements io.Reader
+- Buffer _implicitly_ satisfies io.Reader
 - process accepts the interface type
 - call it with anything that has the Read method
 - used all over the place!
@@ -583,12 +609,27 @@ class: inverse
 
 # Exercise 3
 
+Let's create a key-value database and store some people in it!
+
 - Copy the template `store` package
-- Define an interface with a method `StoreKey()` that returns a `uint64`
-- Create a type `InMemory` that uses a map to store any type of object that implements your interface
+- Create a type `InMemory` that uses a map to store things that satisfy Keyer
 - `InMemory` should have functions to store and retrieve values by key
 - Update your `Person` so that it implements the interface
-- Try to name everything as fluently and idiomatically as possible
+
+---
+
+class: inverse
+
+# Exercise 3
+
+[embedmd]:# (exercises/ex3/template/store/store.go)
+
+???
+
+- Copy the template `store` package
+- Create a type `InMemory` that uses a map to store things that satisfy Keyer
+- `InMemory` should have functions to store and retrieve values by key
+- Update your `Person` so that it implements the interface
 
 ---
 
@@ -600,7 +641,7 @@ class: inverse
 
 ...
 
-[embedmd]:# (exercises/ex3/solution/main.go /func.*StoreKey/ $)
+[embedmd]:# (exercises/ex3/solution/main.go /func.*Key/ $)
 
 ---
 
@@ -768,7 +809,7 @@ If your store is not thread safe, what happened? Go detects data races on maps.
 
 ...
 
-[embedmd]:# (exercises/ex4/solution/main.go /func.*StoreKey/ $)
+[embedmd]:# (exercises/ex4/solution/main.go /func.*Key/ $)
 
 ???
 
