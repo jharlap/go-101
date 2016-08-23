@@ -221,19 +221,19 @@ func byReference(r *int) {
 
 ---
 
-# Arrays and Slices
+# Slices
 
 ```go
-var (
-    a [32]byte // array of bytes
-    s []byte   // byte slice
-)
+var s []byte   // byte slice
 s2 := make([]byte, 1024) // byte slice with 1024 elements (all zeros)
-s3 := []int{6, 9, 42}
+s3 := []int{6, 9, 42} // declare and initialize with some values
 
-a[1] = 42
-a[40] = 28 // index out of bounds will panic
+s2[0] = 42
+s2[4000] = 28 // index out of bounds will panic
 s = append(s, 42) // magically grow backing array (new allocation and copy values)
+
+len(s) // length = 1
+cap(s) // capacity = ... something at least equal to 1
 ```
 
 - Array is a numbered sequence of elements of a single type
