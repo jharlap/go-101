@@ -7,38 +7,42 @@ import (
 	"sync"
 )
 
-// StoreKeyer is an object that can be kept in an InMemory store
-type StoreKeyer interface {
-	StoreKey() uint64
+// Keyer is an object that can be kept in an InMemory store
+type Keyer interface {
+	Key() int
 }
 
-// An InMemory store is thread-safe and handles any StoreKeyer
+// An InMemory store handles any Keyer
 type InMemory struct {
 	sync.RWMutex
-	data map[uint64]StoreKeyer
+	data map[int]Keyer
+}
+
+// New creates an InMemory store
+func New() InMemory {
+	return InMemory{
+		data: make(map[int]Keyer),
+	}
 }
 
 var errUnexpected = errors.New("an unexpected error")
 
 // Put stores a value
-func (db *InMemory) Put(v StoreKeyer) error {
+func (db *InMemory) Put(v Keyer) (int, error) {
 	db.Lock()
 	defer db.Unlock()
 
-	if db.data == nil {
-		db.data = make(map[uint64]StoreKeyer)
-	}
-
 	if rand.Intn(10) < 5 {
-		return errUnexpected
+		return 0, errUnexpected
 	}
 
-	db.data[v.StoreKey()] = v
-	return nil
+	k := v.Key()
+	db.data[k] = v
+	return k, nil
 }
 
 // Get retrieves a value
-func (db *InMemory) Get(k uint64) (StoreKeyer, error) {
+func (db *InMemory) Get(k int) (Keyer, error) {
 	db.RLock()
 	defer db.RUnlock()
 
