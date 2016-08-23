@@ -61,20 +61,23 @@ func main() {
 - `$GOPATH/src/package`
 - Import path defined by directory structure
 - Fetch packages with `go get`
+- All files in a package directory are part of the **same** package
 
 `go get -u github.com/jharlap/go-101`
 
 `$GOPATH/src/github.com/jharlap/go-101` now exists
 
-`import github.com/jharlap/go-101/lib/image`
+`import github.com/bradfitz/iter`
 
 Tip: Name packages `[a-z][a-z0-9_-]` for best results
+
 
 ???
 
 - Packages stored in GOPATH/src/...
 - No reserved words, must start with letter
 - Spec pretends unicode OK - don't do it
+- Can split code into multiple files - symbols are visible across files
 
 ---
 
