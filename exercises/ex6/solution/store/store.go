@@ -7,7 +7,7 @@ import (
 	"sync"
 )
 
-// Keyer is an object that can be kept in an InMemory store
+// Keyer is a type that can be kept in an InMemory store
 type Keyer interface {
 	Key() int
 }

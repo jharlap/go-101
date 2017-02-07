@@ -10,6 +10,7 @@ class: center, middle
 
 Go is a general purpose language designed for systems programming.
 
+- Compiled
 - Strongly typed
 - Garbage collected
 - Explicit support for concurrency
@@ -20,9 +21,28 @@ Go is a general purpose language designed for systems programming.
 
 # Topics
 
+- Setup
 - Basics
-- Object Oriented Go
+- Interfaces
 - Concurrency
+
+---
+
+class: center, middle
+
+# Setup
+
+---
+
+# Install Go
+
+```sh
+brew update && brew install go
+mkdir -p $HOME/go/src
+export GOPATH=$HOME/go
+```
+
+(or use the official installer from golang.org instead of brew, the rest is the same)
 
 ---
 
@@ -54,11 +74,11 @@ class: center, middle
 - Fetch packages with `go get`
 - All files in a package directory are part of the **same** package
 
-`go get -u github.com/jharlap/go-101`
+`$ go get -u github.com/jharlap/go-101`
 
 `$GOPATH/src/github.com/jharlap/go-101` now exists
 
-`import github.com/bradfitz/iter`
+`import "github.com/bradfitz/iter"`
 
 Tip: Name packages `[a-z][a-z0-9_-]` for best results
 
@@ -123,14 +143,19 @@ Yes, complex64 is a type.
 
 ---
 
-# Structs
+# Types & Structs
 
+```go
+	type Incantation string
+```
+???
+- `type` keyword names a user-defined type
+--
 A struct is a sequence of fields with names and types.
 
 [embedmd]:# (slides/basics_struct.go /\ttype/ /}/)
 ???
 
-- `type` keyword names a user-defined type
 - `struct` keyword plus field declaration block is the complete type
 --
 [embedmd]:# (slides/basics_struct.go /\tp :=/ /\d\)/)
@@ -326,49 +351,7 @@ go run main.go
 
 class: center, middle
 
-# Object Oriented Go
-
----
-
-# Is Go Object Oriented?
-
-OOL has classes, objects, encapsulation, inheritance, composition, polymorphism. Is Go an OOL? No.
-
-But...
-
---
-
-An object is something with both state and behaviour.
-
-User defined types can have methods, so we have objects.
-
-???
-
-Object has state and behaviour. State = data = type/struct. Behaviour = methods.
-
----
-
-# Other OOP Properties
-
-- Encapsulation is about visibility
-???
-Go has package-level visibility
-
---
-
-- Composition describes the **has-a** relation between objects
-???
-Struct fields can have user-defined types (which can have methods)
-
---
-
-- Inheritance describes the **is-a** relation between objects
-???
-Embedding _kinda sorta_ mimicks inheritance...
-
---
-
-- Polymorphism: Implicitly satisfied interfaces are THE BEST!
+# Advanced Types & Packages
 
 ---
 
@@ -388,7 +371,7 @@ Embedding _kinda sorta_ mimicks inheritance...
 - Method signature: func, receiver, method name, parameters, return types, code block
 - Receiver is effectively a parameter for the function
 - Receiver variable name usually 1 char
-- Method mutates the object so must be a pointer
+- Method mutates the value so must be a pointer
 --
 
 [embedmd]:# (slides/oop_methods.go /func main/ /}/)
@@ -418,7 +401,7 @@ We haven't covered interfaces yet, so keep the explanation of why we did this si
 
 ---
 
-# Composition (has-a)
+# Composition
 
 [embedmd]:# (slides/oop_composition.go /type/ $)
 
@@ -429,7 +412,7 @@ We haven't covered interfaces yet, so keep the explanation of why we did this si
 
 ---
 
-# Embedding (is-a)
+# Embedding
 
 [embedmd]:# (slides/oop_embedding.go /type/ $)
 
@@ -461,7 +444,21 @@ We haven't covered interfaces yet, so keep the explanation of why we did this si
 
 ---
 
-# Visibility
+# Symbol Visibility
+
+First letter of a symbol defines visibility:
+
+- lowercase symbols _are not_ exported
+- Uppercase symbols _are_ exported
+
+Remember: symbols include types (incl. interfaces) and values (incl. vars, consts, funcs)
+
+???
+- Exported symbols define a package's API
+- Fluent and simple APIs are readable when used
+- Avoid stutter
+
+--
 
 ```go
 package http // import net/http
@@ -595,9 +592,13 @@ func main() {
 
 # inteface{}
 
- An interface is implemented by all objects that implement the specified methods.
+ An interface is implemented by all types that implement the specified methods.
 
  What is `interface{}`? What implements `interface{}`?
+
+--
+
+_Anything_
 
 ???
 
@@ -674,7 +675,7 @@ Embedding isn't just for structs! Interfaces embedded in an interface.
 
 ---
 
-# OOP Recap
+# Recap
 
 - Methods
 - Embedding
@@ -767,7 +768,7 @@ go run concurrency_goroutines_concurrent_wg.go  0.33s user 0.06s system 0.831 to
 
 - no guarantee of goroutine ordering
 - runtime 0.8 seconds
-- waitgroup `Done()` modifies object, so must pass pointer to function
+- waitgroup `Done()` modifies value, so must pass pointer to function
 
 ---
 
