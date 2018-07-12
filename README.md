@@ -9,7 +9,8 @@ exercise.
 To view the slides:
 
 ```bash
-python -m SimpleHTTPServer 8081
+python -m SimpleHTTPServer 8081 # python2
+python -m http.server 8081 # python3
 ```
 
 And browse to http://localhost:8081/
