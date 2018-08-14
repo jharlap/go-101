@@ -1726,12 +1726,24 @@ Handling an error can mean logging it, passing it up the call stack, running a f
 - [Effective Go](https://golang.org/doc/effective_go.html)
 - [Go Language Spec](https://golang.org/ref/spec)
 - Standard library (browse through godoc)
+    - [net/http](https://golang.org/pkg/net/http/)
+    - [io](https://golang.org/pkg/io)
+    - [bufio](https://golang.org/pkg/bufio/)
+    - [context](https://golang.org/pkg/context/)
 - [Gopher Slack](https://invite.slack.golangbridge.org/)
 - [Go Best Practices](https://peter.bourgon.org/go-best-practices-2016/)
 - [Gopher Academy](https://blog.gopheracademy.com/)
 - [GoTime Podcast](http://gotime.fm/)
 - [Go by Example](https://gobyexample.com/)
+- Go Blog
+    - [Go Slice Usage and Internals](https://blog.golang.org/go-slices-usage-and-internals)
+    - [Go Maps in Actin](https://blog.golang.org/go-maps-in-action)
+    - [Strings, Bytes, Runes and Chars in Go](https://blog.golang.org/strings)
+    - [Context](https://blog.golang.org/context)
+- [Package Oriented Design](https://www.ardanlabs.com/blog/2017/02/package-oriented-design.html)
+- [Go Interfaces](https://blog.chewxy.com/2018/03/18/golang-interfaces/)
 - [Many more learning resources from the Go wiki](https://github.com/golang/go/wiki#learning-more-about-go)
+
 
 ---
 
